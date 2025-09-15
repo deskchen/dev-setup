@@ -84,6 +84,8 @@ alias l='ls -CF'
 alias grep='grep --color=auto'
 alias ..='cd ..'
 alias ...='cd ../..'
+alias batcat=bat # For systems where bat is installed as batcat
+alias cat=bat # Use bat as default cat
 
 # History configuration
 HISTSIZE=10000

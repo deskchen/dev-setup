@@ -30,6 +30,7 @@ sudo apt-get install -y \
     vim \
     htop \
     neofetch \
+    bat \
     tree
 
 echo "========================================="
