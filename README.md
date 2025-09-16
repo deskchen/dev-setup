@@ -2,6 +2,20 @@
 
 This collection of shell scripts helps you quickly set up a Linux development environment with essential tools and configurations.
 
+## Quick Start
+
+### 🚀 One-Line Installation (Recommended)
+```bash
+curl -fsSL https://raw.githubusercontent.com/deskchen/dev-setup/main/install.sh | sh
+```
+
+This will download and run the interactive installer that lets you choose which components to install.
+
+For automated/non-interactive installation:
+```bash
+curl -fsSL https://raw.githubusercontent.com/deskchen/dev-setup/main/install.sh | sh -s -- --non-interactive
+```
+
 ## Scripts Overview
 
 ### 🔧 `basic.sh` - Essential Packages
@@ -45,7 +59,7 @@ Sets up Kubernetes development environment:
 - Kubectl completion and aliases for Zsh
 - Docker group configuration
 
-## Quick Start
+### 📋 Manual Installation
 
 1. **Clone or download** these scripts to your Linux machine
 2. **Make scripts executable**:
