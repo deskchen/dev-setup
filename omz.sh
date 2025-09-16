@@ -27,6 +27,15 @@ else
     echo "Oh My Zsh is already installed"
 fi
 
+# --- Copy custom theme ---
+echo "Installing custom theme..."
+if [ -f "$(dirname "$0")/personal.zsh-theme" ]; then
+    cp "$(dirname "$0")/personal.zsh-theme" "$HOME/.oh-my-zsh/themes/"
+    echo "Custom theme copied to Oh My Zsh themes folder"
+else
+    echo "Warning: personal.zsh-theme not found in script directory"
+fi
+
 # --- Install popular plugins ---
 echo "Installing useful Oh My Zsh plugins..."
 
@@ -54,7 +63,7 @@ cat > "$HOME/.zshrc" << 'EOF'
 export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load
-ZSH_THEME="robbyrussell"
+ZSH_THEME="personal"
 
 # Plugins to load
 plugins=(
@@ -84,8 +93,6 @@ alias l='ls -CF'
 alias grep='grep --color=auto'
 alias ..='cd ..'
 alias ...='cd ../..'
-alias batcat=bat # For systems where bat is installed as batcat
-alias cat=bat # Use bat as default cat
 
 # History configuration
 HISTSIZE=10000
@@ -109,12 +116,13 @@ echo "========================================="
 echo "Oh My Zsh setup complete!"
 echo "========================================="
 echo "✅ Zsh installed"
-echo "✅ Oh My Zsh installed with robbyrussell theme"
+echo "✅ Oh My Zsh installed with personal custom theme"
 echo "✅ Useful plugins installed:"
 echo "   - zsh-autosuggestions (suggests commands as you type)"
 echo "   - zsh-syntax-highlighting (highlights valid commands)"
 echo "   - git, sudo, colored-man-pages, command-not-found"
 echo "✅ Custom aliases and history settings configured"
+echo "✅ Personal custom theme installed and configured"
 echo "✅ Zsh set as default shell"
 echo ""
 echo "To start using your new shell:"

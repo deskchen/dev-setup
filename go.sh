@@ -62,11 +62,6 @@ else
     echo "Go environment variables already exist in ${SHELL_CONFIG}"
 fi
 
-# --- Create GOPATH directory ---
-mkdir -p "$HOME/go/bin"
-mkdir -p "$HOME/go/src"
-mkdir -p "$HOME/go/pkg"
-
 echo "========================================="
 echo "Go installation complete!"
 echo "========================================="
