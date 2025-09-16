@@ -6,14 +6,14 @@ This collection of shell scripts helps you quickly set up a Linux development en
 
 ### 🚀 One-Line Installation (Recommended)
 ```bash
-curl -fsSL https://raw.githubusercontent.com/deskchen/dev-setup/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/deskchen/dev-setup/main/install.sh | bash
 ```
 
 This will download and run the interactive installer that lets you choose which components to install.
 
 For automated/non-interactive installation:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/deskchen/dev-setup/main/install.sh | sh -s -- --non-interactive
+curl -fsSL https://raw.githubusercontent.com/deskchen/dev-setup/main/install.sh | bash -s -- --non-interactive
 ```
 
 ## Scripts Overview

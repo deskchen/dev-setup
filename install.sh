@@ -76,8 +76,8 @@ cleanup() {
     fi
 }
 
-# Set up cleanup on exit
-trap cleanup EXIT
+# Set up cleanup on exit (but not for interactive input)
+trap cleanup INT TERM
 
 # Main installation function
 main() {
