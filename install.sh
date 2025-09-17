@@ -119,9 +119,10 @@ main() {
     echo "5) Kubernetes tools (kubectl, helm, etc.)"
     echo "6) Install all components"
     echo "7) Custom selection"
+    echo "8) Exit"
     echo ""
     
-    read -p "Enter your choice (1-7): " choice
+    read -p "Enter your choice (1-8): " choice
     
     case $choice in
         1)
@@ -165,6 +166,10 @@ main() {
             
             read -p "Install Kubernetes tools? (y/n): " install_k8s
             [ "$install_k8s" = "y" ] && run_script "$TEMP_DIR/k8s.sh"
+            ;;
+        8)
+            print_status "Exiting..."
+            exit 0
             ;;
         *)
             print_error "Invalid choice. Exiting."
