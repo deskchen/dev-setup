@@ -84,7 +84,14 @@ run_script() {
     if [ -f "$script" ]; then
         chmod +x "$script"
         print_status "Running $script_name..."
-        bash "$script"
+        # Run the script with proper terminal access
+        if [ -c /dev/tty ] 2>/dev/null; then
+            # Redirect stdin to /dev/tty for the subscript
+            bash "$script" < /dev/tty
+        else
+            # Fallback to normal execution
+            bash "$script"
+        fi
         print_status "$script_name completed successfully"
     else
         print_warning "$script_name not found, skipping..."
