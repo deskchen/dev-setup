@@ -53,6 +53,29 @@ download_file() {
     fi
 }
 
+# Function to read input safely (handles piped input)
+safe_read() {
+    local prompt="$1"
+    local var_name="$2"
+    
+    # Try different methods to read user input
+    if [ -t 0 ]; then
+        # Standard input is a terminal
+        read -p "$prompt" "$var_name"
+    else
+        # Input is piped, try to restore terminal input
+        if [ -t 2 ]; then
+            # stderr is connected to terminal, use it for input
+            echo -n "$prompt" >&2
+            read "$var_name" <&2
+        else
+            # Last resort: just read from stdin (may hang if truly piped)
+            echo -n "$prompt"
+            read "$var_name"
+        fi
+    fi
+}
+
 # Function to make script executable and run it
 run_script() {
     local script="$1"
@@ -122,7 +145,7 @@ main() {
     echo "8) Exit"
     echo ""
     
-    read -p "Enter your choice (1-8): " choice
+    safe_read "Enter your choice (1-8): " choice
     
     case $choice in
         1)
@@ -152,19 +175,19 @@ main() {
             echo ""
             print_status "Custom selection mode:"
             
-            read -p "Install basic tools? (y/n): " install_basic
+            safe_read "Install basic tools? (y/n): " install_basic
             [ "$install_basic" = "y" ] && run_script "$TEMP_DIR/basic.sh"
             
-            read -p "Configure Git? (y/n): " install_git
+            safe_read "Configure Git? (y/n): " install_git
             [ "$install_git" = "y" ] && run_script "$TEMP_DIR/git.sh"
             
-            read -p "Install Oh My Zsh? (y/n): " install_omz
+            safe_read "Install Oh My Zsh? (y/n): " install_omz
             [ "$install_omz" = "y" ] && run_script "$TEMP_DIR/omz.sh"
             
-            read -p "Install Go? (y/n): " install_go
+            safe_read "Install Go? (y/n): " install_go
             [ "$install_go" = "y" ] && run_script "$TEMP_DIR/go.sh"
             
-            read -p "Install Kubernetes tools? (y/n): " install_k8s
+            safe_read "Install Kubernetes tools? (y/n): " install_k8s
             [ "$install_k8s" = "y" ] && run_script "$TEMP_DIR/k8s.sh"
             ;;
         8)

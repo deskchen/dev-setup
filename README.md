@@ -11,11 +11,6 @@ curl -fsSL https://raw.githubusercontent.com/deskchen/dev-setup/main/install.sh 
 
 This will download and run the interactive installer that lets you choose which components to install.
 
-For automated/non-interactive installation:
-```bash
-curl -fsSL https://raw.githubusercontent.com/deskchen/dev-setup/main/install.sh | bash -s -- --non-interactive
-```
-
 ## Scripts Overview
 
 ### 🔧 `basic.sh` - Essential Packages
