@@ -195,7 +195,7 @@ main() {
             [ "$install_go" = "y" ] && run_script "$TEMP_DIR/go.sh"
             
             safe_read "Install Kubernetes tools? (y/n): " install_k8s
-            [ "$install_k8s" = "y" ] && run_script "$TEMP_DIR/k8s.sh"
+            [ "$install_k8s" = "y" ] && run_script "$TEMP_DIR/k8s.sh -s"
             ;;
         8)
             print_status "Exiting..."
