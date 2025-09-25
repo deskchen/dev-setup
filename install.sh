@@ -76,25 +76,47 @@ safe_read() {
     fi
 }
 
-# Function to make script executable and run it
-run_script() {
-    local script="$1"
-    local script_name=$(basename "$script")
+# Function to download and run a script
+download_and_run() {
+    local script_with_args="$1"
+    local script_name=$(echo "$script_with_args" | awk '{print $1}')
+    local script_path="$TEMP_DIR/$script_name"
     
-    if [ -f "$script" ]; then
-        chmod +x "$script"
+    # Create temp directory if it doesn't exist
+    mkdir -p "$TEMP_DIR"
+    
+    # Download the script
+    download_file "$RAW_URL/$script_name" "$script_path"
+    
+    # Run the script with arguments
+    run_script "$script_path $(echo "$script_with_args" | cut -d' ' -f2-)"
+}
+
+# Function to run script from local file
+run_script() {
+    local script_with_args="$1"
+    local script_path=$(echo "$script_with_args" | awk '{print $1}')
+    local script_name=$(basename "$script_path")
+    local script_args=$(echo "$script_with_args" | cut -d' ' -f2-)
+    
+    # If script_args is the same as script_with_args, there are no args
+    if [ "$script_args" = "$script_with_args" ]; then
+        script_args=""
+    fi
+    
+    if [ -f "$script_path" ]; then
+        chmod +x "$script_path"
         print_status "Running $script_name..."
         # Run the script with proper terminal access
         if [ -c /dev/tty ] 2>/dev/null; then
-            # Redirect stdin to /dev/tty for the subscript
-            bash "$script" < /dev/tty
+            bash "$script_path" $script_args < /dev/tty
         else
-            # Fallback to normal execution
-            bash "$script"
+            bash "$script_path" $script_args
         fi
         print_status "$script_name completed successfully"
     else
         print_warning "$script_name not found, skipping..."
+        return 1
     fi
 }
 
@@ -114,30 +136,6 @@ main() {
     print_header "Development Environment Setup"
     print_status "Starting automated development environment setup..."
     
-    # Create temporary directory
-    mkdir -p "$TEMP_DIR"
-    cd "$TEMP_DIR"
-    
-    # Download all setup scripts
-    print_status "Downloading setup scripts from $REPO_URL..."
-    
-    # List of scripts to download
-    scripts=(
-        "basic.sh"
-        "git.sh"
-        "omz.sh"
-        "go.sh"
-        "k8s.sh"
-        "personal.zsh-theme"
-    )
-    
-    # Download each script
-    for script in "${scripts[@]}"; do
-        download_file "$RAW_URL/$script" "$TEMP_DIR/$script"
-    done
-    
-    print_status "All scripts downloaded successfully"
-    
     # Interactive menu for script selection
     echo ""
     print_header "Installation Options"
@@ -156,46 +154,57 @@ main() {
     
     case $choice in
         1)
-            run_script "$TEMP_DIR/basic.sh"
+            download_and_run "basic.sh"
             ;;
         2)
-            run_script "$TEMP_DIR/git.sh"
+            download_and_run "git.sh"
             ;;
         3)
-            run_script "$TEMP_DIR/omz.sh"
+            # Download theme file first for Oh My Zsh
+            mkdir -p "$TEMP_DIR"
+            download_file "$RAW_URL/personal.zsh-theme" "$TEMP_DIR/personal.zsh-theme"
+            download_and_run "omz.sh"
             ;;
         4)
-            run_script "$TEMP_DIR/go.sh"
+            download_and_run "go.sh"
             ;;
         5)
-            run_script "$TEMP_DIR/k8s.sh"
+            download_and_run "k8s.sh -s"
             ;;
         6)
             print_status "Installing all components..."
-            run_script "$TEMP_DIR/basic.sh"
-            run_script "$TEMP_DIR/git.sh"
-            run_script "$TEMP_DIR/omz.sh"
-            run_script "$TEMP_DIR/go.sh"
-            run_script "$TEMP_DIR/k8s.sh"
+            download_and_run "basic.sh"
+            download_and_run "git.sh"
+            # Download theme file first for Oh My Zsh
+            mkdir -p "$TEMP_DIR"
+            download_file "$RAW_URL/personal.zsh-theme" "$TEMP_DIR/personal.zsh-theme"
+            download_and_run "omz.sh"
+            download_and_run "go.sh"
+            download_and_run "k8s.sh -s"
             ;;
         7)
             echo ""
             print_status "Custom selection mode:"
             
             safe_read "Install basic tools? (y/n): " install_basic
-            [ "$install_basic" = "y" ] && run_script "$TEMP_DIR/basic.sh"
+            [ "$install_basic" = "y" ] && download_and_run "basic.sh"
             
             safe_read "Configure Git? (y/n): " install_git
-            [ "$install_git" = "y" ] && run_script "$TEMP_DIR/git.sh"
+            [ "$install_git" = "y" ] && download_and_run "git.sh"
             
             safe_read "Install Oh My Zsh? (y/n): " install_omz
-            [ "$install_omz" = "y" ] && run_script "$TEMP_DIR/omz.sh"
+            if [ "$install_omz" = "y" ]; then
+                # Download theme file first for Oh My Zsh
+                mkdir -p "$TEMP_DIR"
+                download_file "$RAW_URL/personal.zsh-theme" "$TEMP_DIR/personal.zsh-theme"
+                download_and_run "omz.sh"
+            fi
             
             safe_read "Install Go? (y/n): " install_go
-            [ "$install_go" = "y" ] && run_script "$TEMP_DIR/go.sh"
+            [ "$install_go" = "y" ] && download_and_run "go.sh"
             
             safe_read "Install Kubernetes tools? (y/n): " install_k8s
-            [ "$install_k8s" = "y" ] && run_script "$TEMP_DIR/k8s.sh -s"
+            [ "$install_k8s" = "y" ] && download_and_run "k8s.sh -s"
             ;;
         8)
             print_status "Exiting..."
@@ -226,21 +235,18 @@ main() {
 if [ "$1" = "--non-interactive" ] || [ "$1" = "--auto" ]; then
     print_status "Running in non-interactive mode - installing all components"
     
-    # Create temporary directory
+    # Create temporary directory for theme file
     mkdir -p "$TEMP_DIR"
-    cd "$TEMP_DIR"
+    
+    # Download theme file first for Oh My Zsh
+    download_file "$RAW_URL/personal.zsh-theme" "$TEMP_DIR/personal.zsh-theme"
     
     # Download and run all scripts
-    scripts=("basic.sh" "git.sh" "omz.sh" "go.sh" "k8s.sh" "personal.zsh-theme")
-    
-    for script in "${scripts[@]}"; do
-        if [ "$script" != "personal.zsh-theme" ]; then
-            download_file "$RAW_URL/$script" "$TEMP_DIR/$script"
-            run_script "$TEMP_DIR/$script"
-        else
-            download_file "$RAW_URL/$script" "$TEMP_DIR/$script"
-        fi
-    done
+    download_and_run "basic.sh"
+    download_and_run "git.sh"
+    download_and_run "omz.sh"
+    download_and_run "go.sh"
+    download_and_run "k8s.sh -s"
     
     print_header "Non-interactive Installation Complete!"
 else
