@@ -81,6 +81,7 @@ download_and_run() {
     local script_with_args="$1"
     local script_name=$(echo "$script_with_args" | awk '{print $1}')
     local script_path="$TEMP_DIR/$script_name"
+    local script_args=$(echo "$script_with_args" | cut -d' ' -f2-)
     
     # Create temp directory if it doesn't exist
     mkdir -p "$TEMP_DIR"
@@ -89,7 +90,13 @@ download_and_run() {
     download_file "$RAW_URL/$script_name" "$script_path"
     
     # Run the script with arguments
-    run_script "$script_path $(echo "$script_with_args" | cut -d' ' -f2-)"
+    if [ "$script_args" = "$script_with_args" ]; then
+        # No additional arguments
+        run_script "$script_path"
+    else
+        # Has additional arguments
+        run_script "$script_path $script_args"
+    fi
 }
 
 # Function to run script from local file
