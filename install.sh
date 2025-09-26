@@ -152,12 +152,13 @@ main() {
     echo "3) Oh My Zsh with custom theme"
     echo "4) Go programming language"
     echo "5) Kubernetes tools (kubectl, helm, etc.)"
-    echo "6) Install all components"
-    echo "7) Custom selection"
-    echo "8) Exit"
+    echo "6) k9s - Kubernetes terminal UI"
+    echo "7) Install all components"
+    echo "8) Custom selection"
+    echo "9) Exit"
     echo ""
     
-    safe_read "Enter your choice (1-8): " choice
+    safe_read "Enter your choice (1-9): " choice
     
     case $choice in
         1)
@@ -179,6 +180,9 @@ main() {
             download_and_run "k8s.sh -s"
             ;;
         6)
+            download_and_run "k9s.sh"
+            ;;
+        7)
             print_status "Installing all components..."
             download_and_run "basic.sh"
             download_and_run "git.sh"
@@ -188,8 +192,9 @@ main() {
             download_and_run "omz.sh"
             download_and_run "go.sh"
             download_and_run "k8s.sh -s"
+            download_and_run "k9s.sh"
             ;;
-        7)
+        8)
             echo ""
             print_status "Custom selection mode:"
             
@@ -212,8 +217,11 @@ main() {
             
             safe_read "Install Kubernetes tools? (y/n): " install_k8s
             [ "$install_k8s" = "y" ] && download_and_run "k8s.sh -s"
+            
+            safe_read "Install k9s? (y/n): " install_k9s
+            [ "$install_k9s" = "y" ] && download_and_run "k9s.sh"
             ;;
-        8)
+        9)
             print_status "Exiting..."
             exit 0
             ;;
@@ -254,6 +262,7 @@ if [ "$1" = "--non-interactive" ] || [ "$1" = "--auto" ]; then
     download_and_run "omz.sh"
     download_and_run "go.sh"
     download_and_run "k8s.sh -s"
+    download_and_run "k9s.sh"
     
     print_header "Non-interactive Installation Complete!"
 else

@@ -54,6 +54,14 @@ Sets up Kubernetes development environment:
 - Kubectl completion and aliases for Zsh
 - Docker group configuration
 
+### 🎯 `k9s.sh` - Kubernetes Terminal UI
+Installs k9s, a powerful terminal-based UI for Kubernetes clusters:
+- Installs Homebrew (if not already present) with all dependencies
+- Configures Homebrew environment and PATH
+- Installs k9s via Homebrew for easy updates
+- Provides a modern, intuitive interface for managing Kubernetes resources
+- Perfect complement to kubectl for visual cluster management
+
 ### 📋 Manual Installation
 
 1. **Clone or download** these scripts to your Linux machine
@@ -68,4 +76,5 @@ Sets up Kubernetes development environment:
    ./git.sh          # Configure Git with personal access token
    ./go.sh           # Install Go (if needed)
    ./k8s.sh          # Install Kubernetes tools (optional)
+   ./k9s.sh          # Install k9s for Kubernetes cluster management (optional)
    ```
