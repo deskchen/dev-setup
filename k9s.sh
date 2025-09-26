@@ -17,7 +17,28 @@ if ! command -v brew &> /dev/null; then
 
     # Add Homebrew to your PATH for this script and for future terminal sessions
     eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-    echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> ~/.profile
+    
+    # Determine which shell config file to use
+    if [ -f ~/.zshrc ]; then
+        SHELL_CONFIG="$HOME/.zshrc"
+        SHELL_NAME="Zsh"
+    elif [ -f ~/.bashrc ]; then
+        SHELL_CONFIG="$HOME/.bashrc"
+        SHELL_NAME="Bash"
+    else
+        SHELL_CONFIG="$HOME/.profile"
+        SHELL_NAME="shell profile"
+    fi
+    
+    # Check if Homebrew environment is already configured
+    if ! grep -q "# Homebrew environment" "$SHELL_CONFIG" 2>/dev/null; then
+        echo "" >> "$SHELL_CONFIG"
+        echo "# Homebrew environment" >> "$SHELL_CONFIG"
+        echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> "$SHELL_CONFIG"
+        echo "Homebrew environment added to ${SHELL_CONFIG}"
+    else
+        echo "Homebrew environment already configured in ${SHELL_CONFIG}"
+    fi
     echo "✅ Homebrew installed."
 else
     echo "Homebrew is already installed."
@@ -29,5 +50,8 @@ brew install k9s
 
 echo "--------------------------------------------------"
 echo "🚀 k9s installation complete!"
-echo "You may need to run 'source ~/.profile' or restart your terminal."
-echo "Then, just type 'k9s' to start."
+echo "To use k9s and brew commands, either:"
+echo "1. Restart your terminal, OR"
+echo "2. Run: source ${SHELL_CONFIG:-~/.profile}"
+echo ""
+echo "Then, just type 'k9s' to start managing your Kubernetes clusters!"
