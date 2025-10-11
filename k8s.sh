@@ -69,7 +69,8 @@ sudo apt-get install -y \
     curl \
     gnupg \
     lsb-release \
-    apt-transport-https
+    apt-transport-https \
+    xdg-utils
 
 # --- 3. Set up Docker repository ---
 echo "Setting up Docker repository..."
