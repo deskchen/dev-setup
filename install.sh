@@ -153,12 +153,13 @@ main() {
     echo "4) Go programming language"
     echo "5) Kubernetes tools (kubectl, helm, etc.)"
     echo "6) k9s - Kubernetes terminal UI"
-    echo "7) Install all components"
-    echo "8) Custom selection"
-    echo "9) Exit"
+    echo "7) Move Docker data to /mnt (CloudLab)"
+    echo "8) Install all components"
+    echo "9) Custom selection"
+    echo "10) Exit"
     echo ""
     
-    safe_read "Enter your choice (1-9): " choice
+    safe_read "Enter your choice (1-10): " choice
     
     case $choice in
         1)
@@ -183,6 +184,9 @@ main() {
             download_and_run "k9s.sh"
             ;;
         7)
+            download_and_run "docker-move.sh"
+            ;;
+        8)
             print_status "Installing all components..."
             download_and_run "basic.sh"
             download_and_run "git.sh"
@@ -194,7 +198,7 @@ main() {
             download_and_run "k8s.sh -s"
             download_and_run "k9s.sh"
             ;;
-        8)
+        9)
             echo ""
             print_status "Custom selection mode:"
             
@@ -220,8 +224,11 @@ main() {
             
             safe_read "Install k9s? (y/n): " install_k9s
             [ "$install_k9s" = "y" ] && download_and_run "k9s.sh"
+            
+            safe_read "Move Docker data to /mnt? (y/n): " install_docker_move
+            [ "$install_docker_move" = "y" ] && download_and_run "docker-move.sh"
             ;;
-        9)
+        10)
             print_status "Exiting..."
             exit 0
             ;;
