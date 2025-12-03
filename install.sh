@@ -197,6 +197,7 @@ main() {
             download_and_run "go.sh"
             download_and_run "k8s.sh -s"
             download_and_run "k9s.sh"
+            download_and_run "docker-move.sh"
             ;;
         9)
             echo ""
@@ -270,7 +271,7 @@ if [ "$1" = "--non-interactive" ] || [ "$1" = "--auto" ]; then
     download_and_run "go.sh"
     download_and_run "k8s.sh -s"
     download_and_run "k9s.sh"
-    
+    download_and_run "docker-move.sh"
     print_header "Non-interactive Installation Complete!"
 else
     # Run interactive mode
