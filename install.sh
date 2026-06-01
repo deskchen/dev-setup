@@ -152,6 +152,7 @@ install_all_components() {
     install_omz_with_theme
     download_and_run "go.sh"
     download_and_run "rust.sh"
+    download_and_run "zellij.sh"
     download_and_run "k8s.sh -s"
     download_and_run "k9s.sh"
     download_and_run "docker-move.sh"
@@ -173,13 +174,14 @@ main() {
     echo "5) Kubernetes tools (kubectl, helm, etc.)"
     echo "6) k9s - Kubernetes terminal UI"
     echo "7) Rust programming language"
-    echo "8) Move Docker data to /mnt (CloudLab)"
-    echo "9) Install all components"
-    echo "10) Custom selection"
-    echo "11) Exit"
+    echo "8) Zellij terminal workspace"
+    echo "9) Move Docker data to /mnt (CloudLab)"
+    echo "10) Install all components"
+    echo "11) Custom selection"
+    echo "12) Exit"
     echo ""
     
-    safe_read "Enter your choice (1-11): " choice
+    safe_read "Enter your choice (1-12): " choice
     
     case $choice in
         1)
@@ -204,12 +206,15 @@ main() {
             download_and_run "rust.sh"
             ;;
         8)
-            download_and_run "docker-move.sh"
+            download_and_run "zellij.sh"
             ;;
         9)
-            install_all_components
+            download_and_run "docker-move.sh"
             ;;
         10)
+            install_all_components
+            ;;
+        11)
             echo ""
             print_status "Custom selection mode:"
             
@@ -229,6 +234,9 @@ main() {
 
             safe_read "Install Rust? (y/n): " install_rust
             [ "$install_rust" = "y" ] && download_and_run "rust.sh"
+
+            safe_read "Install Zellij? (y/n): " install_zellij
+            [ "$install_zellij" = "y" ] && download_and_run "zellij.sh"
             
             safe_read "Install Kubernetes tools? (y/n): " install_k8s
             [ "$install_k8s" = "y" ] && download_and_run "k8s.sh -s"
@@ -239,7 +247,7 @@ main() {
             safe_read "Move Docker data to /mnt? (y/n): " install_docker_move
             [ "$install_docker_move" = "y" ] && download_and_run "docker-move.sh"
             ;;
-        11)
+        12)
             print_status "Exiting..."
             exit 0
             ;;
@@ -258,7 +266,7 @@ main() {
     print_status "Next steps:"
     echo "• Restart your terminal or run: exec \$SHELL"
     echo "• If you installed Zsh, log out and back in to use it as default shell"
-    echo "• Check that all tools are working: git --version, go version, rustc --version, cargo --version, kubectl version --client"
+    echo "• Check that all tools are working: git --version, go version, rustc --version, cargo --version, zellij --version, kubectl version --client"
     echo ""
     
     print_status "For more information, visit: $REPO_URL"

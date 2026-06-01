@@ -34,6 +34,12 @@ Installs Rust using the official rustup installer:
 - Sets up Cargo environment loading for Bash or Zsh
 - Verifies `rustc`, `cargo`, and the active toolchain
 
+### 🧱 `zellij.sh` - Zellij Terminal Workspace
+Installs Zellij, a terminal workspace and multiplexer:
+- Installs through Cargo with `cargo install --locked zellij`
+- Installs Rust first if Cargo is not already available
+- Verifies the installed `zellij` command
+
 ### 🚀 `omz.sh` - Zsh with Oh My Zsh
 Sets up a powerful terminal experience:
 - Installs Zsh shell
@@ -82,6 +88,7 @@ Installs k9s, a powerful terminal-based UI for Kubernetes clusters:
    ./git.sh          # Configure Git with personal access token
    ./go.sh           # Install Go (if needed)
    ./rust.sh         # Install Rust (if needed)
+   ./zellij.sh       # Install Zellij terminal workspace (optional)
    ./k8s.sh          # Install Kubernetes tools (optional)
    ./k9s.sh          # Install k9s for Kubernetes cluster management (optional)
    ```
