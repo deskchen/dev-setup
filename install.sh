@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Dev Setup Installation Script
-# Usage: curl -fsSL https://raw.githubusercontent.com/deskchen/dev-setup/main/install.sh | sh
+# Usage: curl -fsSL https://raw.githubusercontent.com/deskchen/dev-setup/main/install.sh | bash
 
 set -e
 
@@ -138,6 +138,25 @@ cleanup() {
 # Set up cleanup on exit (but not for interactive input)
 trap cleanup INT TERM
 
+install_omz_with_theme() {
+    # Download theme file first for Oh My Zsh
+    mkdir -p "$TEMP_DIR"
+    download_file "$RAW_URL/personal.zsh-theme" "$TEMP_DIR/personal.zsh-theme"
+    download_and_run "omz.sh"
+}
+
+install_all_components() {
+    print_status "Installing all components..."
+    download_and_run "basic.sh"
+    download_and_run "git.sh"
+    install_omz_with_theme
+    download_and_run "go.sh"
+    download_and_run "rust.sh"
+    download_and_run "k8s.sh -s"
+    download_and_run "k9s.sh"
+    download_and_run "docker-move.sh"
+}
+
 # Main installation function
 main() {
     print_header "Development Environment Setup"
@@ -153,13 +172,14 @@ main() {
     echo "4) Go programming language"
     echo "5) Kubernetes tools (kubectl, helm, etc.)"
     echo "6) k9s - Kubernetes terminal UI"
-    echo "7) Move Docker data to /mnt (CloudLab)"
-    echo "8) Install all components"
-    echo "9) Custom selection"
-    echo "10) Exit"
+    echo "7) Rust programming language"
+    echo "8) Move Docker data to /mnt (CloudLab)"
+    echo "9) Install all components"
+    echo "10) Custom selection"
+    echo "11) Exit"
     echo ""
     
-    safe_read "Enter your choice (1-10): " choice
+    safe_read "Enter your choice (1-11): " choice
     
     case $choice in
         1)
@@ -169,10 +189,7 @@ main() {
             download_and_run "git.sh"
             ;;
         3)
-            # Download theme file first for Oh My Zsh
-            mkdir -p "$TEMP_DIR"
-            download_file "$RAW_URL/personal.zsh-theme" "$TEMP_DIR/personal.zsh-theme"
-            download_and_run "omz.sh"
+            install_omz_with_theme
             ;;
         4)
             download_and_run "go.sh"
@@ -184,22 +201,15 @@ main() {
             download_and_run "k9s.sh"
             ;;
         7)
-            download_and_run "docker-move.sh"
+            download_and_run "rust.sh"
             ;;
         8)
-            print_status "Installing all components..."
-            download_and_run "basic.sh"
-            download_and_run "git.sh"
-            # Download theme file first for Oh My Zsh
-            mkdir -p "$TEMP_DIR"
-            download_file "$RAW_URL/personal.zsh-theme" "$TEMP_DIR/personal.zsh-theme"
-            download_and_run "omz.sh"
-            download_and_run "go.sh"
-            download_and_run "k8s.sh -s"
-            download_and_run "k9s.sh"
             download_and_run "docker-move.sh"
             ;;
         9)
+            install_all_components
+            ;;
+        10)
             echo ""
             print_status "Custom selection mode:"
             
@@ -211,14 +221,14 @@ main() {
             
             safe_read "Install Oh My Zsh? (y/n): " install_omz
             if [ "$install_omz" = "y" ]; then
-                # Download theme file first for Oh My Zsh
-                mkdir -p "$TEMP_DIR"
-                download_file "$RAW_URL/personal.zsh-theme" "$TEMP_DIR/personal.zsh-theme"
-                download_and_run "omz.sh"
+                install_omz_with_theme
             fi
             
             safe_read "Install Go? (y/n): " install_go
             [ "$install_go" = "y" ] && download_and_run "go.sh"
+
+            safe_read "Install Rust? (y/n): " install_rust
+            [ "$install_rust" = "y" ] && download_and_run "rust.sh"
             
             safe_read "Install Kubernetes tools? (y/n): " install_k8s
             [ "$install_k8s" = "y" ] && download_and_run "k8s.sh -s"
@@ -229,7 +239,7 @@ main() {
             safe_read "Move Docker data to /mnt? (y/n): " install_docker_move
             [ "$install_docker_move" = "y" ] && download_and_run "docker-move.sh"
             ;;
-        10)
+        11)
             print_status "Exiting..."
             exit 0
             ;;
@@ -248,31 +258,21 @@ main() {
     print_status "Next steps:"
     echo "• Restart your terminal or run: exec \$SHELL"
     echo "• If you installed Zsh, log out and back in to use it as default shell"
-    echo "• Check that all tools are working: git --version, go version, kubectl version --client"
+    echo "• Check that all tools are working: git --version, go version, rustc --version, cargo --version, kubectl version --client"
     echo ""
     
     print_status "For more information, visit: $REPO_URL"
 }
 
-# Non-interactive mode for CI/CD or automated setups
-if [ "$1" = "--non-interactive" ] || [ "$1" = "--auto" ]; then
+run_non_interactive() {
     print_status "Running in non-interactive mode - installing all components"
-    
-    # Create temporary directory for theme file
-    mkdir -p "$TEMP_DIR"
-    
-    # Download theme file first for Oh My Zsh
-    download_file "$RAW_URL/personal.zsh-theme" "$TEMP_DIR/personal.zsh-theme"
-    
-    # Download and run all scripts
-    download_and_run "basic.sh"
-    download_and_run "git.sh"
-    download_and_run "omz.sh"
-    download_and_run "go.sh"
-    download_and_run "k8s.sh -s"
-    download_and_run "k9s.sh"
-    download_and_run "docker-move.sh"
+    install_all_components
     print_header "Non-interactive Installation Complete!"
+}
+
+# Non-interactive mode for CI/CD or automated setups
+if [ "${1:-}" = "--non-interactive" ] || [ "${1:-}" = "--auto" ]; then
+    run_non_interactive
 else
     # Run interactive mode
     main

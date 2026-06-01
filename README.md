@@ -28,6 +28,12 @@ Downloads and installs the Go programming language:
 - Creates proper directory structure
 - Works with both Bash and Zsh
 
+### 🦀 `rust.sh` - Rust Programming Language
+Installs Rust using the official rustup installer:
+- Uses the default rustup profile and stable toolchain
+- Sets up Cargo environment loading for Bash or Zsh
+- Verifies `rustc`, `cargo`, and the active toolchain
+
 ### 🚀 `omz.sh` - Zsh with Oh My Zsh
 Sets up a powerful terminal experience:
 - Installs Zsh shell
@@ -75,6 +81,7 @@ Installs k9s, a powerful terminal-based UI for Kubernetes clusters:
    ./omz.sh          # Set up your shell environment
    ./git.sh          # Configure Git with personal access token
    ./go.sh           # Install Go (if needed)
+   ./rust.sh         # Install Rust (if needed)
    ./k8s.sh          # Install Kubernetes tools (optional)
    ./k9s.sh          # Install k9s for Kubernetes cluster management (optional)
    ```
